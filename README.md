@@ -30,18 +30,18 @@ yarn add @devjaycode/react-native-theme
 1. First, define your themes:
 
 ```typescript
-import { themeBuilder } from '@devjaycode/react-native-theme';
+import { createThemeBuilder } from '@devjaycode/react-native-theme';
 
-const themes = themeBuilder({
+const themes = createThemeBuilder({
   lightTheme: {
-    primary: '#007AFF',
-    background: '#FFFFFF',
-    text: '#000000',
+    primaryColor: '#007AFF',
+    backgroundColor: '#FFFFFF',
+    textColor: '#000000',
   },
   darkTheme: {
-    primary: '#0A84FF',
-    background: '#000000',
-    text: '#FFFFFF',
+    primaryColor: '#0A84FF',
+    backgroundColor: '#000000',
+    textColor: '#FFFFFF',
   },
   defaultTheme: 'light', // Optional: specify default theme
 });
@@ -66,12 +66,17 @@ function App() {
 ```typescript
 import { useTheme } from '@devjaycode/react-native-theme';
 
+interface Colors {
+  backgroundColor: string;
+  textColor: string;
+}
+
 function MyComponent() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme<Colors>();
 
   return (
-    <View style={{ backgroundColor: theme.background }}>
-      <Text style={{ color: theme.text }}>
+    <View style={{ backgroundColor: theme.backgroundColor }}>
+      <Text style={{ color: theme.textColor }}>
         Hello, themed world!
       </Text>
     </View>
@@ -127,19 +132,19 @@ function MyComponent() {
 You can define custom themes beyond just light and dark:
 
 ```typescript
-const themes = themeBuilder({
+const themes = createThemeBuilder({
   buildTheme: () => [
     {
       name: 'blue',
       theme: {
-        primary: '#0000FF',
+        primaryColor: '#0000FF',
         // ... other colors
       },
     },
     {
       name: 'red',
       theme: {
-        primary: '#FF0000',
+        primaryColor: '#FF0000',
         // ... other colors
       },
     },

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
+import type { Animated, TextStyle, ViewStyle } from 'react-native';
 
-export interface ThemeProviderInterface {
+export interface ThemeProviderProps {
   themeBuilder: ThemeBuilder;
   children: ReactNode;
 }
@@ -36,4 +37,29 @@ export interface ThemeDialogColor {
   backgroundColor: string;
   textColor: string;
   strokeColor: string;
+}
+
+export interface ThemeOption {
+  label: string;
+  value: string;
+}
+
+export interface ThemeDialogAnimationConfig {
+  show: {
+    scale: Animated.SpringAnimationConfig;
+    opacity: Animated.TimingAnimationConfig;
+  };
+  hide: {
+    scale: Animated.TimingAnimationConfig;
+    opacity: Animated.TimingAnimationConfig;
+  };
+}
+
+export interface ThemeDialogStyles {
+  overlay: ViewStyle;
+  dialog: ViewStyle;
+  dialogLine: ViewStyle;
+  title: TextStyle;
+  menuItem: ViewStyle;
+  menuItemText: TextStyle;
 }

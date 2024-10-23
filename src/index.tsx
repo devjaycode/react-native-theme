@@ -1,4 +1,8 @@
 import ThemeDialog from './components/ThemeDialog';
-import { themeBuilder, ThemeProvider, useTheme } from './context/ThemeContext';
+import {
+  createThemeBuilder,
+  ThemeProvider,
+  useTheme,
+} from './context/ThemeContext';
 
-export { ThemeProvider, useTheme, themeBuilder, ThemeDialog };
+export { ThemeProvider, useTheme, createThemeBuilder, ThemeDialog };

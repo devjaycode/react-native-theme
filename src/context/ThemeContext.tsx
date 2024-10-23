@@ -6,56 +6,91 @@ import type {
   Theme,
   ThemeBuilder,
   ThemeContext,
-  ThemeProviderInterface,
+  ThemeProviderProps,
 } from '../types';
+
+const THEME_STORAGE_KEY = '@app/theme';
 
 const ThemeContext = createContext<ThemeContext | undefined>(undefined);
 
-const themeBuilder = (themes: ThemeBuilder) => {
+/**
+ * Creates a theme builder instance with the provided themes configuration
+ * @param themes - Theme builder configuration
+ * @returns ThemeBuilder instance
+ */
+export const createThemeBuilder = (themes: ThemeBuilder): ThemeBuilder => {
   return themes;
 };
 
-const ThemeProvider: React.FC<ThemeProviderInterface> = ({
+/**
+ * Theme Provider component that manages theme state and persistence
+ */
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   themeBuilder,
   children,
 }) => {
   const [theme, setThemeState] = useState<Theme | undefined>(undefined);
-  const THEME_KEY = 'app-theme';
   const colorScheme = useColorScheme();
 
   useEffect(() => {
-    async function loadTheme() {
-      const storedTheme = await AsyncStorage.getItem(THEME_KEY);
+    const initializeTheme = async () => {
+      try {
+        const storedTheme = await AsyncStorage.getItem(THEME_STORAGE_KEY);
 
-      if (storedTheme) {
-        setThemeState(getTheme(storedTheme));
-      } else if (themeBuilder.defaultTheme) {
-        setTheme(themeBuilder.defaultTheme);
+        if (storedTheme) {
+          setThemeState(getThemeByName(storedTheme));
+        } else if (themeBuilder.defaultTheme) {
+          setTheme(themeBuilder.defaultTheme);
+        }
+      } catch (error) {
+        console.error('Failed to load theme:', error);
       }
-    }
+    };
 
-    loadTheme();
+    initializeTheme();
   }, [themeBuilder]);
 
-  const saveTheme = async (themeName: string) => {
-    await AsyncStorage.setItem(THEME_KEY, themeName);
+  /**
+   * Persists theme selection to storage
+   */
+  const persistTheme = async (themeName: string): Promise<void> => {
+    try {
+      await AsyncStorage.setItem(THEME_STORAGE_KEY, themeName);
+    } catch (error) {
+      console.error('Failed to save theme:', error);
+    }
   };
 
-  const isThemeAvailable = (themeName: string) => {
+  /**
+   * Checks if a theme with the given name exists in the theme builder
+   */
+  const isThemeAvailable = (themeName: string): boolean => {
     return (
-      themeBuilder.buildTheme &&
-      themeBuilder.buildTheme().some((theme) => theme.name === themeName)
+      themeBuilder.buildTheme?.()?.some((theme) => theme.name === themeName) ??
+      false
     );
   };
 
-  const getTheme = (themeName: string) => {
+  /**
+   * Retrieves theme configuration by name
+   */
+  const getThemeByName = (themeName: string): Theme => {
+    // Check for custom themes
     if (themeBuilder.buildTheme && isThemeAvailable(themeName)) {
-      return themeBuilder.buildTheme().find((theme) => theme.name === themeName)
-        ?.theme;
-    } else if (
-      (themeName === ThemeMode.Dark ||
-        themeName === ThemeMode.Light ||
-        themeName === ThemeMode.System) &&
+      const customTheme = themeBuilder
+        .buildTheme()
+        .find((theme) => theme.name === themeName)?.theme;
+
+      if (customTheme) {
+        return customTheme;
+      }
+    }
+
+    // Handle system themes
+    if (
+      [ThemeMode.Dark, ThemeMode.Light, ThemeMode.System].includes(
+        themeName as ThemeMode
+      ) &&
       themeBuilder.darkTheme &&
       themeBuilder.lightTheme
     ) {
@@ -69,16 +104,19 @@ const ThemeProvider: React.FC<ThemeProviderInterface> = ({
             ? themeBuilder.darkTheme
             : themeBuilder.lightTheme;
       }
-    } else {
-      throw new Error(
-        `Theme '${themeName}' not found. Are you sure you include the theme in themeBuilder?`
-      );
     }
+
+    throw new Error(
+      `Theme '${themeName}' not found. Please ensure the theme is included in themeBuilder.`
+    );
   };
 
-  const setTheme = (themeName: string) => {
-    setThemeState(getTheme(themeName));
-    saveTheme(themeName);
+  /**
+   * Updates the current theme
+   */
+  const setTheme = (themeName: string): void => {
+    setThemeState(getThemeByName(themeName));
+    void persistTheme(themeName);
   };
 
   return (
@@ -88,15 +126,19 @@ const ThemeProvider: React.FC<ThemeProviderInterface> = ({
   );
 };
 
-function useTheme<T>() {
+/**
+ * Custom hook to access the current theme and theme setter
+ * @throws Error if used outside of ThemeProvider
+ */
+export function useTheme<T>() {
   const context = React.useContext(ThemeContext) as {
     theme: T;
-    setTheme: (theme: string) => {};
+    setTheme: (theme: string) => void;
   };
+
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
+
   return context;
 }
-
-export { themeBuilder, ThemeProvider, useTheme };

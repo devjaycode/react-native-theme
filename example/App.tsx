@@ -1,8 +1,8 @@
 import Home from './src/App';
-import { ThemeProvider, themeBuilder } from 'react-native-theme';
+import { createThemeBuilder, ThemeProvider } from 'react-native-theme';
 
 export default function App() {
-  const themes = themeBuilder({
+  const themes = createThemeBuilder({
     defaultTheme: 'light',
     darkTheme: {
       backgroundColor: 'black',
