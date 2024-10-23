@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { ThemeDialog, useTheme } from 'react-native-theme';
+import { useTheme } from '../../src/context/ThemeContext';
+import ThemeDialog from '../../src/components/ThemeDialog';
 
 interface Colors {
   backgroundColor: string;

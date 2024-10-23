@@ -1,6 +1,6 @@
 {
   "name": "@devjaycode/react-native-theme",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Easily switch between themes in your React apps! 🎨",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",

@@ -66,7 +66,6 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({
   onClose,
   theme = DEFAULT_THEME,
 }) => {
-  const [modalVisible, setModalVisible] = useState(visible);
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const { setTheme } = useTheme();
@@ -83,7 +82,6 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({
    * Handles showing dialog with animation
    */
   const showDialog = (): void => {
-    setModalVisible(true);
     Animated.parallel([
       Animated.spring(scaleAnim, ANIMATION_CONFIG.show.scale),
       Animated.timing(opacityAnim, ANIMATION_CONFIG.show.opacity),
@@ -97,9 +95,7 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({
     Animated.parallel([
       Animated.timing(scaleAnim, ANIMATION_CONFIG.hide.scale),
       Animated.timing(opacityAnim, ANIMATION_CONFIG.hide.opacity),
-    ]).start(() => {
-      setModalVisible(false);
-    });
+    ]).start();
   };
 
   /**
@@ -118,7 +114,7 @@ const ThemeDialog: React.FC<ThemeDialogProps> = ({
 
   return (
     <Modal
-      visible={modalVisible}
+      visible={visible}
       transparent
       animationType="none"
       onRequestClose={onClose}

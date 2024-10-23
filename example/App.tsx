@@ -1,5 +1,5 @@
+import { createThemeBuilder, ThemeProvider } from '../src/context/ThemeContext';
 import Home from './src/App';
-import { createThemeBuilder, ThemeProvider } from 'react-native-theme';
 
 export default function App() {
   const themes = createThemeBuilder({
