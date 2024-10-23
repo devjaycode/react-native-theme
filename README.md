@@ -1,16 +1,16 @@
-<div align="center">
 # React Native Theme
 
+<div align="center">
 ![npm version](https://img.shields.io/npm/v/@devjaycode/react-native-theme)
 ![license](https://img.shields.io/npm/l/@devjaycode/react-native-theme)
 
 A flexible and easy-to-use theming solution for React Native applications, allowing developers to create dynamic themes with support for light, dark, and custom color schemes, along with system theme detection, persistence, and a beautifully designed built-in theme-switching dialog. 🌈
-
-<div align="center">
-![Sample screen record](samples/screen-record.gif)
-![Sample screen record](samples/screen-record-2.gif)
 </div>
 
+<div align="center">
+  <img src="https://github.com/devjaycode/react-native-theme/blob/main/samples/screen-record.gif?raw=true" width="200" alt="Sample screen record"/>
+  &nbsp;&nbsp;&nbsp;
+  <img src="https://github.com/devjaycode/react-native-theme/blob/main/samples/screen-record-2.gif" width="200" alt="Sample screen record"/>
 </div>
 
 ## Features
