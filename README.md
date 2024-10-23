@@ -1,33 +1,205 @@
-# react-native-theme
+# React Native Theme
 
-Easily switch between themes in your React apps! 🎨
+![npm version](https://img.shields.io/npm/v/react-native-theme)
+![license](https://img.shields.io/npm/l/react-native-theme)
+
+A flexible and easy-to-use theming solution for React Native applications, allowing developers to create dynamic themes with support for light, dark, and custom color schemes, along with system theme detection, persistence, and a beautifully designed built-in theme-switching dialog. 🌈
+
+## Features
+
+- 🔄 System theme detection
+- 💾 Theme persistence using `AsyncStorage`
+- 🎨 Custom theme support
+- 🎯 Built-in theme switching dialog
+- 🔌 Easy to integrate
+- 📦 Minimal performance overhead.
+- 🎨 Effortlessly switch between multiple themes.
 
 ## Installation
 
-```sh
-npm install react-native-theme
+```bash
+# Using npm
+npm install @devjaycode/react-native-theme
+
+# Using yarn
+yarn add @devjaycode/react-native-theme
 ```
 
-## Usage
+## Basic Usage
 
+1. First, define your themes:
 
-```js
-import { multiply } from 'react-native-theme';
+```typescript
+import { themeBuilder } from '@devjaycode/react-native-theme';
 
-// ...
-
-const result = await multiply(3, 7);
+const themes = themeBuilder({
+  lightTheme: {
+    primary: '#007AFF',
+    background: '#FFFFFF',
+    text: '#000000',
+  },
+  darkTheme: {
+    primary: '#0A84FF',
+    background: '#000000',
+    text: '#FFFFFF',
+  },
+  defaultTheme: 'light', // Optional: specify default theme
+});
 ```
 
+2. Wrap your app with ThemeProvider:
+
+```typescript
+import { ThemeProvider } from '@devjaycode/react-native-theme';
+
+function App() {
+  return (
+    <ThemeProvider themeBuilder={themes}>
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+```
+
+3. Use the theme in your components:
+
+```typescript
+import { useTheme } from '@devjaycode/react-native-theme';
+
+function MyComponent() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <View style={{ backgroundColor: theme.background }}>
+      <Text style={{ color: theme.text }}>
+        Hello, themed world!
+      </Text>
+    </View>
+  );
+}
+```
+
+## Theme Switching Dialog
+
+The library includes a beautiful, animated theme switching dialog that you can easily integrate:
+
+```typescript
+import { ThemeDialog } from '@devjaycode/react-native-theme';
+
+function MyComponent() {
+  const [dialogVisible, setDialogVisible] = useState(false);
+
+  return (
+    <>
+      <Button
+        title="Change Theme"
+        onPress={() => setDialogVisible(true)}
+      />
+
+      <ThemeDialog
+        visible={dialogVisible}
+        onClose={() => setDialogVisible(false)}
+        theme={{
+          backgroundColor: '#ffffff',  // Optional: customize dialog background
+          textColor: '#000000',       // Optional: customize text color
+          strokeColor: '#c0e6ba',     // Optional: customize accent color
+        }}
+      />
+    </>
+  );
+}
+```
+
+### Dialog Features
+
+- 💫 Smooth scale and fade animations
+- 🎨 Customizable colors
+- 📱 Responsive design
+- 🔄 Built-in theme options:
+  - Light Theme
+  - Dark Theme
+  - System Default
+
+## Advanced Usage
+
+### Custom Themes
+
+You can define custom themes beyond just light and dark:
+
+```typescript
+const themes = themeBuilder({
+  buildTheme: () => [
+    {
+      name: 'blue',
+      theme: {
+        primary: '#0000FF',
+        // ... other colors
+      },
+    },
+    {
+      name: 'red',
+      theme: {
+        primary: '#FF0000',
+        // ... other colors
+      },
+    },
+  ],
+  defaultTheme: 'blue',
+});
+```
+
+### System Theme Support
+
+The library automatically handles system theme changes when using the 'system' theme mode:
+
+```typescript
+// Switch to system theme mode
+const { setTheme } = useTheme();
+setTheme('system');
+```
+
+### Theme Persistence
+
+Themes are automatically persisted using AsyncStorage. The selected theme will be restored when the app restarts.
+
+## API Reference
+
+### ThemeProvider Props
+
+| Prop         | Type            | Description                            |
+| ------------ | --------------- | -------------------------------------- |
+| themeBuilder | ThemeBuilder    | Object containing theme configurations |
+| children     | React.ReactNode | Child components                       |
+
+### ThemeDialog Props
+
+| Prop    | Type        | Description                    |
+| ------- | ----------- | ------------------------------ |
+| visible | boolean     | Control dialog visibility      |
+| onClose | () => void  | Callback when dialog is closed |
+| theme   | DialogTheme | Optional theme customization   |
+
+### useTheme Hook
+
+Returns an object with:
+
+- `theme`: Current theme object
+- `setTheme`: Function to change the current theme
+
+### ThemeMode Enum
+
+```typescript
+enum ThemeMode {
+  Dark = 'dark',
+  Light = 'light',
+  System = 'system',
+}
+```
 
 ## Contributing
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+MIT © [DevJayCode](https://github.com/devjaycode)
